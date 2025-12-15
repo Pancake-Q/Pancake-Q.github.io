@@ -1,0 +1,20 @@
+/*
+ * @Author       : Pancake
+ * @Date         : 2022-04-06 23:25:41
+ * @LastEditTime : 2022-04-09 23:37:04
+ * @LastEditors  : Pancake
+ * @FilePath     : \Pancake-Q\docs\.vuepress\styles\palette.css
+ * @Description  : 调色板变量 - VuePress v2
+ */
+
+:root {
+  /* 主题色 */
+  --vp-c-brand: #3178c6;
+  --vp-c-brand-light: #4992d6;
+  --vp-c-brand-lighter: #6aa9e6;
+  --vp-c-brand-dark: #2763a6;
+  --vp-c-brand-darker: #1d4e86;
+
+  /* 背景色 */
+  --vp-c-bg: #f4f8fc;
+}

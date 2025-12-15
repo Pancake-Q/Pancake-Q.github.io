@@ -1,0 +1,19 @@
+/*
+ * @Author       : Pancake
+ * @Date         : 2022-04-06 23:34:50
+ * @LastEditTime : 2022-04-09 23:30:33
+ * @LastEditors  : Pancake
+ * @FilePath     : \Pancake-Q\docs\.vuepress\styles\index.css
+ * @Description  : 自定义样式 - VuePress v2
+ */
+
+/* 暗色模式下代码块样式 */
+.dark .vp-code {
+    background-color: rgba(58, 58, 92, 0.7);
+    color: #fff;
+}
+
+/* 隐藏页面标题 */
+.vp-doc h1 {
+   display: none;
+}

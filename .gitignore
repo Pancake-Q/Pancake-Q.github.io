@@ -1,0 +1,32 @@
+# Dependencies
+node_modules
+
+# Build output
+dist
+docs/.vuepress/dist
+
+# VuePress cache and temp files
+docs/.vuepress/.cache
+docs/.vuepress/.temp
+
+# macOS
+.DS_Store
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
+.env
+.env.local
+.env.*.local
