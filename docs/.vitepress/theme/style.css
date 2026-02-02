@@ -4,6 +4,16 @@
  */
 
 /**
+ * Fonts
+ * -------------------------------------------------------------------------- */
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root {
+  --vp-font-family-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+}
+
+/**
  * Colors
  *
  * Each colors have exact same color scale system with 3 levels of solid
@@ -135,4 +145,67 @@
 
 .DocSearch {
   --docsearch-primary-color: var(--vp-c-brand-1) !important;
+}
+
+/**
+ * Layout: Wider content area
+ * -------------------------------------------------------------------------- */
+
+.VPDoc.has-aside .content-container {
+  max-width: 900px !important;
+}
+
+.VPDoc:not(.has-aside) .content-container {
+  max-width: 900px !important;
+}
+
+/**
+ * Component: Code blocks
+ * -------------------------------------------------------------------------- */
+
+.vp-code-group .tabs label {
+  font-family: var(--vp-font-family-mono);
+}
+
+div[class*='language-'] {
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.dark div[class*='language-'] {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+div[class*='language-'] code {
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+/**
+ * Component: Links
+ * -------------------------------------------------------------------------- */
+
+.vp-doc a {
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.25s, color 0.25s;
+}
+
+.vp-doc a:hover {
+  border-bottom-color: var(--vp-c-brand-1);
+}
+
+/**
+ * Component: Inline code
+ * -------------------------------------------------------------------------- */
+
+.vp-doc :not(pre) > code {
+  border-radius: 4px;
+  padding: 3px 6px;
+  background-color: var(--vp-c-default-soft);
+  transition: background-color 0.25s;
+}
+
+.vp-doc a > code {
+  color: var(--vp-c-brand-1);
 }
