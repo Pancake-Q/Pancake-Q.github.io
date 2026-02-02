@@ -1,11 +1,11 @@
 ---
 name: frontend-dev-guidelines
-description: Vue 3/Nuxt 3/React/TypeScript 前端开发最佳实践。涵盖组件设计、TypeScript 类型安全、SCSS 样式管理、BEM 命名、代码重构、Composables/Hooks、代码组织、性能优化、Element Plus/Ant Design。用于创建组件、重构代码、样式管理、类型定义、代码质量检查。
+description: 前端开发规范指南。涵盖 Vue 3/Nuxt 3、React/Next.js、TypeScript、Tailwind CSS/SCSS/CSS-in-JS 样式方案。适用于组件开发、代码重构、样式管理、类型定义。
 ---
 
 # 前端开发规范指南
 
-> Vue 3、Nuxt 3、React、TypeScript 现代前端开发最佳实践
+> 现代前端开发最佳实践 - Vue 3/Nuxt 3、React/Next.js、TypeScript、多种样式方案
 
 ---
 
@@ -14,8 +14,11 @@ description: Vue 3/Nuxt 3/React/TypeScript 前端开发最佳实践。涵盖组�
 | 主题 | 资源 | 说明 |
 |------|------|------|
 | 🎯 **Vue/Nuxt 开发** | [Vue 3 + Nuxt 3 指南](resources/vue-nuxt-guide.md) | 组件结构、Composables、路由、SSR |
+| ⚛️ **React/Next.js 开发** | [React + Next.js 指南](resources/react-nextjs-guide.md) | 组件模式、Hooks、路由、数据获取 |
 | 📘 **TypeScript 规范** | [TypeScript 规范](resources/typescript-guide.md) | 类型定义、内置类型、禁用规则 |
 | 🎨 **样式管理** | [样式管理指南](resources/styling-guide.md) | SCSS 变量、Mixins、BEM 命名 |
+| 🌊 **Tailwind CSS** | [Tailwind CSS 指南](resources/tailwind-guide.md) | 原子化样式、自定义配置 |
+| 💅 **CSS-in-JS** | [CSS-in-JS 指南](resources/css-in-js-guide.md) | styled-components、Emotion |
 | 🔄 **代码重构** | [重构检查清单](./resources/refactoring-checklist.md) | 重构流程、质量检查、最佳实践 |
 | 📁 **代码组织** | [代码组织规范](resources/code-organization.md) | 目录结构、文件命名、组件抽离 |
 
@@ -30,7 +33,7 @@ description: Vue 3/Nuxt 3/React/TypeScript 前端开发最佳实践。涵盖组�
 - ✅ **代码复用**：重复 >3 次必须抽离
 
 ### 2. 类型安全
-- ✅ **强类型**：Props、Emits、函数参数必须定义类型
+- ✅ **强类型**：Props、事件、函数参数必须定义类型
 - ❌ **禁止 `any`**：使用具体类型或 `unknown`
 - ✅ **优先内置类型**：`Record`、`Partial`、`Pick`、`Omit`
 
@@ -41,7 +44,39 @@ description: Vue 3/Nuxt 3/React/TypeScript 前端开发最佳实践。涵盖组�
 ### 4. 代码一致性
 - ✅ **命名规范**：遵循统一的命名约定
 - ✅ **结构规范**：统一的文件和代码结构
-- ✅ **样式规范**：BEM 命名 + SCSS 变量
+- ✅ **样式规范**：选择一种样式方案并坚持使用
+
+---
+
+## ⚡ 框架选择指南
+
+### Vue 3 / Nuxt 3
+
+**适用场景**：
+- 团队熟悉 Vue 生态
+- 需要渐进式采用
+- 偏好 SFC（单文件组件）模式
+- 中小型项目快速开发
+
+**核心特性**：
+- Composition API + `<script setup>`
+- Composables 逻辑复用
+- Pinia 状态管理
+- Nuxt 3 SSR/SSG
+
+### React / Next.js
+
+**适用场景**：
+- 团队熟悉 React 生态
+- 需要高度灵活性
+- 大型应用或复杂交互
+- 丰富的社区资源
+
+**核心特性**：
+- Function Components + Hooks
+- Server Components (Next.js 13+)
+- App Router / Pages Router
+- 丰富的状态管理选择
 
 ---
 
@@ -56,9 +91,12 @@ description: Vue 3/Nuxt 3/React/TypeScript 前端开发最佳实践。涵盖组�
 | 类型/接口/组件 | 大驼峰 | `UserProfile`, `NewsItem`, `ApiResponse` |
 | 组件文件 | 大驼峰 | `UserProfile.vue`, `NewsCard.tsx` |
 | CSS 类 (BEM) | block__element--modifier | `.card__title--large` |
+| CSS 类 (Tailwind) | 实用类组合 | `flex items-center gap-4` |
 | 类型别名避免冲突 | Type 后缀 | `AgentInfoType`, `UserDataType` |
 
-### Vue 3 组件结构
+---
+
+## 🔧 Vue 3 组件结构
 
 ```vue
 <template>
@@ -111,7 +149,55 @@ onMounted(() => {
 </style>
 ```
 
-### TypeScript 规范
+---
+
+## ⚛️ React 组件结构
+
+```tsx
+// UserCard.tsx
+import { useState, useCallback, useMemo } from 'react'
+import { UserAvatar } from './UserAvatar'
+import { useUserData } from '@/hooks/useUserData'
+import { formatName } from '@/utils/formatters'
+import type { UserType } from '@/types'
+import styles from './UserCard.module.css'
+
+interface UserCardProps {
+  user: UserType
+  count?: number
+  onUpdate?: (value: number) => void
+}
+
+export function UserCard({ user, count = 0, onUpdate }: UserCardProps) {
+  // 1. Hooks
+  const [isLoading, setIsLoading] = useState(false)
+  const { userData } = useUserData(user.id)
+
+  // 2. Memoized values
+  const displayName = useMemo(
+    () => formatName(user.firstName, user.lastName),
+    [user.firstName, user.lastName]
+  )
+
+  // 3. Callbacks
+  const handleClick = useCallback(() => {
+    onUpdate?.(count + 1)
+  }, [count, onUpdate])
+
+  // 4. Render
+  return (
+    <div className={styles.userCard}>
+      <UserAvatar user={user} />
+      <span className={styles.title}>{displayName}</span>
+      <button onClick={handleClick}>Update</button>
+    </div>
+  )
+}
+```
+
+---
+
+## 📘 TypeScript 规范
 
 ```typescript
 // ✅ 优先使用 TS 内置类型
@@ -128,21 +214,16 @@ function process(data: User) { }
 function process(data: unknown) { }
 ```
 
-### SCSS 样式管理
+---
+
+## 🎨 样式方案对比
+
+### SCSS + BEM
 
 ```scss
-// assets/styles/variables.scss - 定义变量
+// assets/styles/variables.scss
 $color-primary: #333;
 $spacing-md: 20px;
-$shadow-base: 0 2px 8px rgba(0, 0, 0, 0.1);
-
-// assets/styles/mixins.scss - 复用样式
-@mixin card-base {
-  padding: $spacing-md;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: $shadow-base;
-}
 
 // 组件中使用
 .news-card {
@@ -156,6 +237,79 @@ $shadow-base: 0 2px 8px rgba(0, 0, 0, 0.1);
   &__title--large {
     font-size: 24px;
   }
+}
+```
+
+### Tailwind CSS
+
+```tsx
+// 组件中使用
+export function NewsCard({ title, featured }: NewsCardProps) {
+  return (
+    <div className="p-4 bg-white rounded-lg shadow-md">
+      <h3 className={`text-gray-800 mb-4 ${featured ? 'text-2xl font-bold' : 'text-lg'}`}>
+        {title}
+      </h3>
+    </div>
+  )
+}
+```
+
+### CSS-in-JS (styled-components)
+
+```tsx
+import styled from 'styled-components'
+
+const Card = styled.div`
+  padding: ${props => props.theme.spacing.md};
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+`
+
+const Title = styled.h3<{ $featured?: boolean }>`
+  color: ${props => props.theme.colors.primary};
+  font-size: ${props => props.$featured ? '24px' : '16px'};
+`
+
+export function NewsCard({ title, featured }: NewsCardProps) {
+  return (
+    <Card>
+      <Title $featured={featured}>{title}</Title>
+    </Card>
+  )
+}
+```
+
+### CSS Modules
+
+```tsx
+// NewsCard.module.css
+.card {
+  padding: 1rem;
+  background: white;
+  border-radius: 8px;
+}
+
+.title {
+  color: var(--color-primary);
+}
+
+.titleLarge {
+  font-size: 24px;
+}
+
+// NewsCard.tsx
+import styles from './NewsCard.module.css'
+
+export function NewsCard({ title, featured }: NewsCardProps) {
+  return (
+    <div className={styles.card}>
+      <h3 className={`${styles.title} ${featured ? styles.titleLarge : ''}`}>
+        {title}
+      </h3>
+    </div>
+  )
 }
 ```
 
@@ -194,10 +348,17 @@ components/
 ├── business/    # 业务组件（资讯卡片、论文卡片）
 └── form/        # 表单组件（搜索框、筛选器）
 
+# Vue 项目
 composables/     # 可复用业务逻辑
 ├── useFetchNews.ts
 ├── useSearchState.ts
 └── useFilterState.ts
+
+# React 项目
+hooks/           # 自定义 Hooks
+├── useFetchNews.ts
+├── useSearchState.ts
+└── useDebounce.ts
 
 utils/           # 纯函数工具
 ├── formatDate.ts
@@ -223,15 +384,15 @@ types/           # 类型定义
 ### 2. 执行重构
 
 **样式**：
-1. 抽离颜色/字体/间距 → `variables.scss`
-2. 封装复用样式模式 → `mixins.scss`
-3. 重命名 CSS 类为 BEM 规范
+1. 抽离颜色/字体/间距 → 变量/主题
+2. 封装复用样式模式 → mixins/组件
+3. 统一命名规范
 
 **组件**：
 1. 识别可复用 UI 结构
 2. 创建组件到 `components/` 对应目录
 3. 定义 TypeScript 接口
-4. 移动样式（scoped）
+4. 移动样式（scoped/modules）
 
 **逻辑**：
 1. 抽离业务逻辑 → `composables/` 或 `hooks/`
@@ -253,7 +414,7 @@ pnpm type-check      # 检查类型错误
 ## 🔧 命名冲突解决方案
 
 ### 问题场景
-在 Vue 3 开发中,经常遇到组件名、类型名、变量名之间的命名冲突问题。
+在组件开发中,经常遇到组件名、类型名、变量名之间的命名冲突问题。
 
 ### 最佳实践
 
@@ -281,33 +442,6 @@ import AgentInfo from './AgentInfo.vue'
 const currentAgentInfo = ref({ ... })
 ```
 
-#### 3. 完整示例
-
-```vue
-<template>
-  <div class="news-page">
-    <!-- 使用组件 -->
-    <agent-info :agent-info="currentAgentInfo" />
-  </div>
-</template>
-
-<script setup lang="ts">
-import { computed } from 'vue'
-import AgentInfo from './components/AgentInfo.vue'  // 组件
-import type { AgentInfoType } from '@/types/newsAgent'  // 类型
-
-// 变量使用描述性名称
-const currentAgentInfo = computed<AgentInfoType>(() => ({
-  id: 'news',
-  agentName: '安全资讯智能体',
-  icon: 'news-agent.png',
-  version: '1.0',
-  agentLevel: 'ADVANCED',
-  explain: '提供最新的网络安全行业资讯'
-}))
-</script>
-```
-
 ### 命名规则总结
 
 | 场景 | 规则 | 示例 |
@@ -321,39 +455,36 @@ const currentAgentInfo = computed<AgentInfoType>(() => ({
 
 ## 🎓 最佳实践指南
 
-最佳实践已按类别整理到对应的资源文档中，点击下方链接快速查看：
+最佳实践已按类别整理到对应的资源文档中：
 
 ### Vue/Nuxt 开发实践
 👉 [Vue 3 + Nuxt 3 开发指南](resources/vue-nuxt-guide.md)
-- [响应式数据选择](resources/vue-nuxt-guide.md#响应式数据选择) - ref vs reactive
-- [数据获取最佳实践](resources/vue-nuxt-guide.md#数据获取最佳实践) - useAsyncData vs useFetch
-- [内存泄漏预防](resources/vue-nuxt-guide.md#内存泄漏预防)
-- [组件导入问题](resources/vue-nuxt-guide.md#组件导入问题)
-- [命名冲突解决](resources/vue-nuxt-guide.md#命名冲突解决)
-- [组件拆分策略](resources/vue-nuxt-guide.md#组件拆分策略)
+- 响应式数据选择、数据获取最佳实践
+- 内存泄漏预防、组件导入问题
+- 命名冲突解决、组件拆分策略
+
+### React/Next.js 开发实践
+👉 [React + Next.js 开发指南](resources/react-nextjs-guide.md)
+- 组件设计模式、Hooks 最佳实践
+- Server Components、数据获取策略
+- 性能优化、错误边界
 
 ### TypeScript 类型实践
 👉 [TypeScript 开发指南](resources/typescript-guide.md)
-- [Interface vs Type 选择](resources/typescript-guide.md#interface-vs-type-选择)
-- [可选属性定义](resources/typescript-guide.md#可选属性定义)
-- [JSON 数据处理](resources/typescript-guide.md#json-数据处理)
-- [Vue 组件 Props 类型](resources/typescript-guide.md#vue-组件-props-类型)
-- [命名冲突解决](resources/typescript-guide.md#命名冲突解决)
-- [类型定义组织](resources/typescript-guide.md#类型定义组织)
+- Interface vs Type 选择
+- 可选属性定义、JSON 数据处理
+- 组件 Props 类型、类型定义组织
 
 ### 样式管理实践
-👉 [样式管理指南](resources/styling-guide.md)
-- [SCSS 文件组织](resources/styling-guide.md#scss-文件组织)
-- [BEM 命名长度优化](resources/styling-guide.md#bem-命名长度优化)
-- [样式冲突避免策略](resources/styling-guide.md#样式冲突避免策略)
-- [样式重复处理](resources/styling-guide.md#样式重复处理)
-- [UI 库样式统一覆盖](resources/styling-guide.md#ui-库样式统一覆盖)
+👉 [样式管理指南](resources/styling-guide.md) - SCSS + BEM
+👉 [Tailwind CSS 指南](resources/tailwind-guide.md) - 原子化样式
+👉 [CSS-in-JS 指南](resources/css-in-js-guide.md) - styled-components/Emotion
 
 ### 通用解决方案
 
 | 问题 | 快速解决方案 | 详细文档 |
-|------|------------|---------|
-| 文件超过 500 行 | 拆分组件 + 抽离 composables + 抽离样式 | [Vue指南](resources/vue-nuxt-guide.md) |
+|------|------------|---------｜
+| 文件超过 500 行 | 拆分组件 + 抽离逻辑 + 抽离样式 | [代码组织](resources/code-organization.md) |
 | 逻辑重复（>3 次） | 抽离到 `composables/`、`hooks/` 或 `utils/` | [代码组织](resources/code-organization.md) |
 | 缺少类型定义 | 定义接口并抽离到 `types/` 目录 | [TypeScript指南](resources/typescript-guide.md) |
 
@@ -361,37 +492,45 @@ const currentAgentInfo = computed<AgentInfoType>(() => ({
 
 ## 📖 详细文档
 
-以下文档提供了各个领域的详细规范和最佳实践，建议根据实际需求查阅：
+以下文档提供了各个领域的详细规范和最佳实践：
 
-**Vue/Nuxt 开发**
+**框架开发**
 - [Vue 3 + Nuxt 3 开发指南](resources/vue-nuxt-guide.md)
   - 组件结构规范、Props/Emits 最佳实践
   - Composables 使用、状态管理（Pinia）
   - 路由配置、SSR 最佳实践、性能优化
+- [React + Next.js 开发指南](resources/react-nextjs-guide.md)
+  - 函数组件、Hooks 最佳实践
+  - Server Components、App Router
+  - 状态管理、数据获取、性能优化
 
 **TypeScript 规范**
 - [TypeScript 规范](resources/typescript-guide.md)
-  - 类型定义规范、内置工具类型（Partial、Pick、Omit、Record）
-  - 禁止使用的类型（any、object）、泛型使用
+  - 类型定义规范、内置工具类型
+  - 禁止使用的类型、泛型使用
   - 函数类型定义、类型断言
 
 **样式管理**
 - [样式管理指南](resources/styling-guide.md)
-  - SCSS 变量管理（颜色、间距、字体、阴影）
-  - Mixins 复用（卡片、Flex、文本溢出、响应式）
+  - SCSS 变量管理、Mixins 复用
   - BEM 命名规范、UI 库样式覆盖
+- [Tailwind CSS 指南](resources/tailwind-guide.md)
+  - 配置定制、实用类使用
+  - 响应式设计、暗色模式
+- [CSS-in-JS 指南](resources/css-in-js-guide.md)
+  - styled-components、Emotion
+  - 主题系统、动态样式
 
 **代码重构**
 - [重构检查清单](./resources/refactoring-checklist.md)
-  - 重构前准备（目标、现状分析、计划）
-  - 执行流程（样式重构、组件重构、逻辑重构）
-  - 质量检查（lint、type-check、UI 还原、功能测试）
+  - 重构前准备、执行流程
+  - 质量检查、完成清单
 
 **项目组织**
 - [代码组织规范](resources/code-organization.md)
-  - Nuxt 3/React 项目目录结构
-  - 组件组织规范（common、layout、business、form）
-  - 文件命名规范、代码分层架构、模块化原则
+  - Vue/React 项目目录结构
+  - 组件组织规范、文件命名规范
+  - 代码分层架构、模块化原则
 
 ---
 
@@ -422,11 +561,13 @@ refactor(news): extract NewsCard component
 
 ---
 
-**版本**: 1.1.0
-**最后更新**: 2025-12-23
+**版本**: 2.0.0
+**最后更新**: 2026-01-13
 **维护者**: AI-DEV-CONFIG Team
 **主要更新**:
-- 添加命名冲突解决方案专题
-- 优化 Vue 3 组件结构示例
-- 增加导入顺序规范
-- 完善常见问题解决方案
+- 新增 React/Next.js 开发指南
+- 新增 Tailwind CSS 样式指南
+- 新增 CSS-in-JS 样式指南
+- 重构文档结构，支持多框架
+- 添加框架选择指南
+- 优化样式方案对比

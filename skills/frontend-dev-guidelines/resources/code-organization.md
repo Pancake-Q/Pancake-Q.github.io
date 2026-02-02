@@ -1,6 +1,6 @@
 # 代码组织规范
 
-> 项目结构、目录组织、文件命名规范
+> Vue/Nuxt 与 React/Next.js 项目结构、目录组织、文件命名规范
 
 ---
 
@@ -97,9 +97,9 @@ my-react-app/
 │   ├── api/                  # API 封装
 │   ├── assets/               # 静态资源
 │   ├── components/           # 组件
-│   │   ├── common/
-│   │   ├── layout/
-│   │   └── business/
+│   │   ├── ui/               # 基础 UI 组件
+│   │   ├── layout/           # 布局组件
+│   │   └── features/         # 功能模块组件
 │   ├── hooks/                # 自定义 Hooks
 │   ├── pages/                # 页面
 │   ├── routes/               # 路由配置
@@ -107,10 +107,62 @@ my-react-app/
 │   ├── styles/               # 样式
 │   ├── types/                # 类型定义
 │   ├── utils/                # 工具函数
+│   ├── lib/                  # 第三方库封装
 │   ├── App.tsx
 │   └── main.tsx
 ├── package.json
 └── tsconfig.json
+```
+
+### Next.js App Router 结构
+
+```
+my-nextjs-app/
+├── app/                       # App Router（Next.js 13+）
+│   ├── (auth)/               # 路由分组（不影响 URL）
+│   │   ├── login/
+│   │   │   └── page.tsx
+│   │   └── register/
+│   │       └── page.tsx
+│   ├── (main)/               # 主要页面分组
+│   │   ├── layout.tsx        # 共享布局
+│   │   ├── page.tsx          # 首页
+│   │   └── news/
+│   │       ├── page.tsx      # 列表页
+│   │       └── [id]/
+│   │           └── page.tsx  # 详情页
+│   ├── api/                  # API Routes
+│   │   └── news/
+│   │       └── route.ts
+│   ├── layout.tsx            # 根布局
+│   ├── loading.tsx           # 全局加载
+│   ├── error.tsx             # 全局错误
+│   └── globals.css           # 全局样式
+├── components/                # 组件
+│   ├── ui/                   # 基础 UI（shadcn/ui）
+│   │   ├── button.tsx
+│   │   ├── card.tsx
+│   │   └── input.tsx
+│   ├── layout/               # 布局组件
+│   │   ├── header.tsx
+│   │   └── footer.tsx
+│   └── features/             # 功能组件
+│       ├── news-card.tsx
+│       └── news-list.tsx
+├── hooks/                     # 自定义 Hooks
+│   ├── use-fetch-news.ts
+│   └── use-debounce.ts
+├── lib/                       # 工具库
+│   ├── utils.ts              # cn() 等工具函数
+│   └── api-client.ts         # API 客户端
+├── types/                     # 类型定义
+│   ├── news.ts
+│   └── api.ts
+├── public/                    # 静态文件
+├── next.config.js
+├── tailwind.config.ts
+├── tsconfig.json
+└── package.json
 ```
 
 ---
@@ -148,6 +200,7 @@ components/common/
 
 **示例**：
 
+**Vue:**
 ```vue
 <!-- components/common/Button/Button.vue -->
 <script setup lang="ts">
@@ -163,6 +216,25 @@ const emit = defineEmits<{
   click: [event: MouseEvent]
 }>()
 </script>
+```
+
+**React:**
+```tsx
+// components/ui/button.tsx
+import { forwardRef } from 'react'
+import { cn } from '@/lib/utils'
+
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: 'default' | 'primary' | 'destructive'
+  size?: 'sm' | 'md' | 'lg'
+}
+
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, variant = 'default', size = 'md', ...props }, ref) => (
+    <button ref={ref} className={cn(buttonVariants({ variant, size }), className)} {...props} />
+  )
+)
+Button.displayName = 'Button'
 ```
 
 ```typescript
@@ -614,6 +686,10 @@ import { NewsCard } from '@components/business'
 
 ---
 
-**版本**: 1.0.0
-**最后更新**: 2025-12-22
+**版本**: 2.0.0
+**最后更新**: 2026-01-13
 **维护者**: AI-DEV-CONFIG Team
+**主要更新**:
+- 新增 Next.js App Router 目录结构
+- 更新 React 项目结构
+- 添加 React 组件示例
