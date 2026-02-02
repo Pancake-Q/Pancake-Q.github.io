@@ -3,9 +3,17 @@ import { defineConfig } from 'vitepress'
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   // Site metadata
-  title: "My Blog",
-  description: "A modern blog built with VitePress",
+  title: "个人技术博客",
+  description: "分享前端、后端、工具使用等技术文章",
   lang: 'zh-CN',
+
+  // GitHub Pages base path
+  base: '/',
+
+  // Sitemap for SEO
+  sitemap: {
+    hostname: 'https://pancake-q.github.io'
+  },
 
   // Clean URLs (remove .html)
   cleanUrls: true,
@@ -15,13 +23,13 @@ export default defineConfig({
 
   // Head tags for SEO and favicons
   head: [
-    ['link', { rel: 'icon', href: '/favicon.ico' }],
+    ['link', { rel: 'icon', type: 'image/gif', href: '/logo.gif' }],
     ['meta', { name: 'theme-color', content: '#3eaf7c' }],
     ['meta', { name: 'apple-mobile-web-app-capable', content: 'yes' }],
     ['meta', { name: 'apple-mobile-web-app-status-bar-style', content: 'black' }],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:locale', content: 'zh_CN' }],
-    ['meta', { property: 'og:site_name', content: 'My Blog' }],
+    ['meta', { property: 'og:site_name', content: '个人技术博客' }],
   ],
 
   // Markdown configuration
@@ -41,7 +49,7 @@ export default defineConfig({
     // https://vitepress.dev/reference/default-theme-config
 
     // Logo
-    logo: '/logo.svg',
+    logo: '/logo.gif',
 
     // Navigation
     nav: [
@@ -55,6 +63,8 @@ export default defineConfig({
           { text: '工具', link: '/categories/tools/' }
         ]
       },
+      { text: '标签', link: '/tags/' },
+      { text: '归档', link: '/archives/' },
       { text: '关于', link: '/about' }
     ],
 
@@ -99,19 +109,19 @@ export default defineConfig({
 
     // Social links
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/yourusername/blog' }
+      { icon: 'github', link: 'https://github.com/Pancake-Q/Pancake-Q.github.io' }
     ],
 
     // Edit link
     editLink: {
-      pattern: 'https://github.com/yourusername/blog/edit/main/docs/:path',
+      pattern: 'https://github.com/Pancake-Q/Pancake-Q.github.io/edit/main/docs/:path',
       text: '在 GitHub 上编辑此页'
     },
 
     // Footer
     footer: {
       message: 'Released under the MIT License.',
-      copyright: 'Copyright © 2024-present'
+      copyright: 'Copyright © 2024-present PancakeHub'
     },
 
     // Document footer navigation
